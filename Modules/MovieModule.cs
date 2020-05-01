@@ -237,7 +237,9 @@ namespace OscarBot.Modules
             using var scope = this.ServiceProvider.CreateScope();
             var db = scope.ServiceProvider.GetService<BotDbContext>();
 
-            var list = await db.Movie.AsQueryable().Where(x => !x.Watched).ToListAsync();
+            var list = await db.Movie.AsQueryable().Where(x => !x.Watched)
+                .OrderBy(x => x.Title)
+                .ToListAsync();
             var returnstring = new StringBuilder();
             //returnstring.AppendLine($"I found these titles");
             foreach (var item in list)
@@ -254,7 +256,9 @@ namespace OscarBot.Modules
             using var scope = this.ServiceProvider.CreateScope();
             var db = scope.ServiceProvider.GetService<BotDbContext>();
 
-            var list = await db.Movie.AsQueryable().Where(x => x.Watched).ToListAsync();
+            var list = await db.Movie.AsQueryable().Where(x => x.Watched)
+                 .OrderBy(x => x.Title)
+                 .ToListAsync();
             var returnstring = new StringBuilder();
             //returnstring.AppendLine($"I found these titles");
             foreach (var item in list)
@@ -346,7 +350,7 @@ namespace OscarBot.Modules
             }
             foreach (var pick in list)
             {
-                await Context.Channel.SendMessageAsync($"Pick # { i + 1 } " + System.Environment.NewLine + $"**{ pick.Title }** https://www.imdb.com/title/{ pick.Id}");
+                await Context.Channel.SendMessageAsync($"Pick # { i + 1 } : **{ pick.Title }** https://www.imdb.com/title/{ pick.Id}");
                 i++;
                 await Task.Delay(1500);
             }
