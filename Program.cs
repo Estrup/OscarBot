@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -79,8 +80,9 @@ namespace OscarBot
                         .EnableSensitiveDataLogging(true)
                         .UseLoggerFactory(loggerFactory)
                         .EnableDetailedErrors(true)
+
                         )
-                
+                .AddMediatR(typeof(Program))
                 .BuildServiceProvider();
         }
     }
