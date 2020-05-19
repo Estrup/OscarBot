@@ -1,0 +1,12 @@
+kind: pipeline
+name: default
+type: docker
+
+steps:
+  - name: build test image
+    image: docker:latest
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+    commands:
+      - docker build --no-cache -t oscarbot -f OscarBot/Dockerfile .
