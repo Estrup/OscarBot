@@ -2,13 +2,21 @@ kind: pipeline
 name: default
 
 steps:
-- name: test
+- name: build
   image: docker:dind
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
   commands:
   - docker build --no-cache -t oscarbot -f OscarBot/Dockerfile ./OscarBot
+- name: clone
+  image: alpine/git
+  environment:
+    GITAUTH:
+      from_secret: gitauth
+    GOARCH: amd64  
+  commands:
+  - git clone https://$GITAUTH@github.com/Estrup/SwarmVault.git
 
 volumes:
 - name: dockersock
