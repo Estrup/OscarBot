@@ -11,6 +11,14 @@ steps:
   commands:
   - docker build --no-cache -t oscarbot -f OscarBot/Dockerfile ./OscarBot
 
+- name: clone-compose
+  image: alpine/git
+  environment:
+    GITAUTH:
+      from_secret: gitauth
+  commands:
+  - git clone https://$GITAUTH@github.com/Estrup/SwarmVault.git
+
 volumes:
 - name: dockersock
   host:
