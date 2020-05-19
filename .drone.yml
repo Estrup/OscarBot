@@ -8,7 +8,7 @@ steps:
   - name: dockersock
     path: /var/run/docker.sock
   commands:
-  - docker build --no-cache -t oscarbot -f OscarBot/Dockerfile .
+  - docker build --no-cache -t oscarbot -f OscarBot/Dockerfile ./OscarBot
 
 volumes:
 - name: dockersock
