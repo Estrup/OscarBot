@@ -23,5 +23,6 @@
     <Folder Include="Modules\" />
     <Folder Include="Services\" />
     <Folder Include="Commands\" />
+    <Folder Include="Tables\" />
   </ItemGroup>
 </Project>

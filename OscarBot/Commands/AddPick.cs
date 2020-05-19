@@ -75,7 +75,8 @@ namespace OscarBot.Commands
                     Runtime = result.Runtime,
                     Picked = true,
                     AddedBy = Context.User.Id.ToString(),
-                    AddedByUsername = Context.User.Username
+                    AddedByUsername = Context.User.Username,
+                    AddedAt = DateTime.Now
                 };
             }
             mevent.EventMovies.Add(new EventMovie { Movie = movie });
