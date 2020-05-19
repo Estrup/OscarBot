@@ -22,6 +22,7 @@ namespace OscarBot.Models
         public bool Picked { get; set; }
         public string AddedBy { get; set; }
         public string AddedByUsername { get; set; }
+        public DateTime AddedAt { get; set; }
 
         public virtual ICollection<EventMovie> EventMovies { get; set; }
     }

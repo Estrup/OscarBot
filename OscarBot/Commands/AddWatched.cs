@@ -5,17 +5,21 @@ using OscarBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using OscarBot.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace OscarBot.Commands
 {
-    public class AddMovie : BaseDiscordCmd { public string IdOrUrl { get; set; } }
+    public class AddWatched : BaseDiscordCmd
+    {
+        public string IdOrUrl { get; set; }
+    }
 
-    public class AddMovieHandler : MediatR.AsyncRequestHandler<AddMovie>
+    public class AddWatchedHandler : MediatR.AsyncRequestHandler<AddWatched>
     {
         private readonly OmdbService omdbService;
         private readonly IServiceProvider serviceProvider;
 
-        public AddMovieHandler(
+        public AddWatchedHandler(
             OmdbService omdbService,
             IServiceProvider serviceProvider
             )
@@ -23,10 +27,11 @@ namespace OscarBot.Commands
             this.omdbService = omdbService;
             this.serviceProvider = serviceProvider;
         }
-        protected override async Task Handle(AddMovie request, CancellationToken cancellationToken)
+        protected override async Task Handle(AddWatched request, CancellationToken cancellationToken)
         {
             var idOrUrl = request.IdOrUrl;
             var Context = request.Context;
+
             var result = await omdbService.Get(idOrUrl);
             if (result == null)
             {
@@ -35,10 +40,13 @@ namespace OscarBot.Commands
 
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetService<BotDbContext>();
-            if (await db.Movie.AnyAsync(x => x.Id == result.imdbID))
+
+            if (await db.Movie.AsQueryable().AnyAsync(x => x.Id == result.imdbID))
             {
-                var movie = await db.Movie.SingleAsync(x => x.Id == result.imdbID);
-                movie.Watched = false;
+                var movie = await db.Movie.AsQueryable().SingleAsync(x => x.Id == result.imdbID);
+                movie.Picked = false;
+                movie.Watched = true;
+                movie.WatchedDate = DateTime.Now;
             }
             else
             {
@@ -51,14 +59,16 @@ namespace OscarBot.Commands
                     Director = result.Director,
                     Language = result.Director,
                     Runtime = result.Runtime,
+                    Watched = true,
+                    WatchedDate = DateTime.Now,
                     AddedBy = Context.User.Id.ToString(),
-                    AddedByUsername = Context.User.Username
+                    AddedByUsername = Context.User.Username,
+                    AddedAt = DateTime.Now
                 });
             }
-
             await db.SaveChangesAsync();
 
-            await Context.Channel.SendMessageAsync($"***{ result.Title }*** added to list");
+            await Context.Channel.SendMessageAsync($"***{ result.Title }*** has now been watched");
         }
     }
 }

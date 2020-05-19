@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text;
 using Discord;
+using OscarBot.Tables;
 
 namespace OscarBot.Commands
 {
@@ -37,15 +38,21 @@ namespace OscarBot.Commands
             var list = await db.Movie.AsQueryable().Where(x => !x.Watched)
                 .OrderBy(x => x.Title)
                 .ToListAsync();
-            var returnstring = new StringBuilder();
-            //returnstring.AppendLine($"I found these titles");
-            foreach (var item in list)
-            {
-                returnstring.AppendLine($"**{ item.Title }** *https://www.imdb.com/title/{ item.Id}*");
-            }
-            var eb = new EmbedBuilder() { Title = "To-watch list", Description = returnstring.ToString(), Color = Color.DarkBlue };
-            await Context.Channel.SendMessageAsync(embed: eb.Build());
 
+            var builder = new TableBuilder<Movie>() {
+                MaxPageLength = 2000-6
+            };
+           
+            builder.AddColumn("Title", "Title", 25);
+            builder.AddColumn("Director", "Director", 20);
+            builder.AddColumn("Runtime", "Runtime");
+            builder.AddColumn("Added", "AddedAt");
+            var pages = builder.Build(list);
+            foreach (var page in pages)
+            {
+                await Context.Channel.SendMessageAsync("```" + page + "```");
+            }
+           
         }
     }
 }
