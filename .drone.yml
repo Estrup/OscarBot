@@ -14,10 +14,20 @@ steps:
 - name: clone-compose
   image: alpine/git
   environment:
-    GITAUTH:
-      from_secret: gitauth
+    DEPLOYREPO:
+      from_secret: DEPLOYREPO
   commands:
-  - git clone https://$GITAUTH@github.com/Estrup/SwarmVault.git
+  - git clone $DEPLOYREPO
+
+- name: deploy
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+  #- apk add --no-cache py-pip
+  # - pip install docker-compose
+  - docker-compose -p oscarbot up -d
 
 volumes:
 - name: dockersock
