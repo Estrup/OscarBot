@@ -44,7 +44,6 @@ namespace OscarBot.Commands
             if (await db.Movie.AsQueryable().AnyAsync(x => x.Id == result.imdbID))
             {
                 var movie = await db.Movie.AsQueryable().SingleAsync(x => x.Id == result.imdbID);
-                movie.Picked = false;
                 movie.Watched = true;
                 movie.WatchedDate = DateTime.Now;
             }

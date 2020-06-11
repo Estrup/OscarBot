@@ -39,9 +39,6 @@ namespace OscarBot.Models
 
                 entity.Property(e => e.ServerId).HasMaxLength(100);
 
-                entity.Property(e => e.Picked)
-                    .IsRequired();
-
                 entity.Property(e => e.Watched)
                     .IsRequired();
             });

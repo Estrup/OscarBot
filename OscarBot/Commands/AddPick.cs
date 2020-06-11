@@ -73,7 +73,6 @@ namespace OscarBot.Commands
                     Director = result.Director,
                     Language = result.Director,
                     Runtime = result.Runtime,
-                    Picked = true,
                     AddedBy = Context.User.Id.ToString(),
                     AddedByUsername = Context.User.Username,
                     AddedAt = DateTime.Now
