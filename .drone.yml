@@ -11,14 +11,6 @@ steps:
   commands:
   - docker build --no-cache -t oscarbot -f OscarBot/Dockerfile ./OscarBot
 
-# - name: clone-compose
-#   image: alpine/git
-#   environment:
-#     DEPLOYREPO:
-#       from_secret: DEPLOYREPO
-#   commands:
-#   - git clone $DEPLOYREPO
-
 - name: deploy
   image: docker/compose
   volumes:
@@ -34,10 +26,12 @@ steps:
     DISCORD_TOKEN:
       from_secret: DISCORD_TOKEN        
   commands:
-  #- apk add --no-cache py-pip
-  # - pip install docker-compose
   - docker-compose -p oscarbot up -d
 
+trigger:
+  branch:
+  - master
+  
 volumes:
 - name: dockersock
   host:
