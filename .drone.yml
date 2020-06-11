@@ -20,7 +20,7 @@ steps:
   - git clone $DEPLOYREPO
 
 - name: deploy
-  image: docker:dind
+  image: docker/compose
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
