@@ -43,10 +43,10 @@ namespace OscarBot.Commands
                 MaxPageLength = 1900
             };
            
-            builder.AddColumn("Title", "Title", 25);
+            builder.AddColumn("Title", "Title", 30);
             builder.AddColumn("Director", "Director", 20);
             builder.AddColumn("Runtime", "Runtime");
-            //builder.AddColumn("Added", "AddedAt");
+            builder.AddColumn("AddedBy", "AddedByUsername");
             var pages = builder.Build(list);
             foreach (var page in pages)
             {
