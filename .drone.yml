@@ -1,8 +1,9 @@
 kind: pipeline
 name: default
+type: docker
 
-steps:
-- name: test
+steps:  
+- name: build
   image: docker:dind
   volumes:
   - name: dockersock
@@ -10,6 +11,27 @@ steps:
   commands:
   - docker build --no-cache -t oscarbot -f OscarBot/Dockerfile ./OscarBot
 
+- name: deploy
+  image: docker/compose
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  environment:
+    SQL_PASSWORD:
+      from_secret: SQL_PASSWORD  
+    OMDB_KEY:
+      from_secret: OMDB_KEY
+    SQL_CONNECTIONSTRING:
+      from_secret: SQL_CONNECTIONSTRING
+    DISCORD_TOKEN:
+      from_secret: DISCORD_TOKEN        
+  commands:
+  - docker-compose -p oscarbot up -d
+
+trigger:
+  branch:
+  - master
+  
 volumes:
 - name: dockersock
   host:

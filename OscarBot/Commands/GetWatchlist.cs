@@ -40,13 +40,13 @@ namespace OscarBot.Commands
                 .ToListAsync();
 
             var builder = new TableBuilder<Movie>() {
-                MaxPageLength = 2000-6
+                MaxPageLength = 1900
             };
            
             builder.AddColumn("Title", "Title", 25);
             builder.AddColumn("Director", "Director", 20);
             builder.AddColumn("Runtime", "Runtime");
-            builder.AddColumn("Added", "AddedAt");
+            //builder.AddColumn("Added", "AddedAt");
             var pages = builder.Build(list);
             foreach (var page in pages)
             {
