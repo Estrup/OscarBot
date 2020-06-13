@@ -3,9 +3,10 @@ namespace OscarBot.Models
 {
     public class ReleaseDate
     {
+        public Guid Id { get; set; }
         public Guid MovieId { get; set; }
         public ReleaseDateType Type { get; set; }
-        public DateTime Date { get; set; }
+        public DateTimeOffset Date { get; set; }
         public string Note { get; set; }
         public string LocationCode { get; set; }
     }

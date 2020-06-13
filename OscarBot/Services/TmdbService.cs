@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using OscarBot.Services.Tmdb;
 
 namespace OscarBot.Services
 {
@@ -18,32 +20,24 @@ namespace OscarBot.Services
             _http = http;
         }
 
-        public async Task<List<OmdbResult>> Search(string term)
+        public async Task<TmdbMovie> GetTitle(long id)
         {
-            var url = $"http://www.omdbapi.com/?apikey={_key}&s={term}";
+            var url = $"https://api.themoviedb.org/3/movie/{id}?api_key={_key}&language=en-US&append_to_response=release_dates%2Credits";
             var resp = await _http.GetAsync(url);
             var json = await resp.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<OmdbSearch>(json).Search;
+            return JsonConvert.DeserializeObject<TmdbMovie>(json);
         }
 
-        public async Task<OmdbResult> GetTitle(string id)
+        public async Task<TmdbMovie> Get(string idOrUrl)
         {
-            var url = $"http://www.omdbapi.com/?apikey={_key}&i={id}";
-            var resp = await _http.GetAsync(url);
-            var json = await resp.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<OmdbResult>(json);
-        }
-
-        public async Task<OmdbResult> Get(string idOrUrl)
-        {
-            var id = "";
+            var imdbid = "";
             if (idOrUrl.StartsWith("http") || idOrUrl.StartsWith("www"))
             {
                 var reg = new Regex(@"\/title\/([a-zA-Z0-9_.-]*)", RegexOptions.IgnoreCase);
                 var match = reg.Match(idOrUrl);
                 if (match.Success)
                 {
-                    id = match.Groups[1].Value;
+                    imdbid = match.Groups[1].Value;
                 }
                 else
                 {
@@ -51,10 +45,23 @@ namespace OscarBot.Services
                 }
             }
             else
-                id = idOrUrl;
+                imdbid = idOrUrl;
 
-            var result = await GetTitle(id);
+            var id = await GetTmdbId(imdbid);
+            if (id == null) return null;
+            var result = await GetTitle(id.Value);
             return result;
+        }
+
+        public async Task<long?> GetTmdbId(string imdbId)
+        {
+            var url = $"https://api.themoviedb.org/3/find/{imdbId}?api_key={this._key}&language=en-US&external_source=imdb_id";
+            var resp = await _http.GetAsync(url);
+            var json = await resp.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<TmdbSearchResult>(json);
+            if (result.MovieResults.Count != 0) return null;
+
+            return result.MovieResults.First().Id;
         }
     }
 

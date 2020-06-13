@@ -18,15 +18,12 @@ namespace OscarBot.Commands
 
     public class GetWatchlistHandler : MediatR.AsyncRequestHandler<GetWatchlist>
     {
-        private readonly OmdbService omdbService;
         private readonly IServiceProvider serviceProvider;
 
         public GetWatchlistHandler(
-            OmdbService omdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(GetWatchlist request, CancellationToken cancellationToken)

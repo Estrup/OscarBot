@@ -18,19 +18,10 @@ namespace OscarBot.Modules
 {
     public class MovieModule : ModuleBase<SocketCommandContext>
     {
-        // Dependency Injection will fill this value in for us
-        public OmdbService OmdbService { get; set; }
         public IServiceProvider ServiceProvider { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
         public IMediator Mediator { get; set; }
 
-        [Command("search")]
-        public async Task Search([Remainder] string term) =>
-            await Mediator.Send(new ImdbSearch
-            {
-                Context = Context,
-                term = term,
-            });
 
         [Command("add")]
         public async Task Add(string idOrUrl) =>

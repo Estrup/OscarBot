@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OscarBot.Services.Tmdb
 {
-    public partial class Movie
+    public partial class TmdbMovie
     {
         public bool Adult { get; set; }
         public string BackdropPath { get; set; }
@@ -100,7 +100,7 @@ namespace OscarBot.Services.Tmdb
         public string Iso639_1 { get; set; }
         public string Note { get; set; }
         public DateTimeOffset ReleaseDateReleaseDate { get; set; }
-        public long Type { get; set; }
+        public int Type { get; set; }
     }
 
     public partial class SpokenLanguage

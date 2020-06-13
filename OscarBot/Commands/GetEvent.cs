@@ -17,16 +17,13 @@ namespace OscarBot.Commands
 
     public class GetEventHandler : MediatR.AsyncRequestHandler<GetEvent>
     {
-        private readonly OmdbService omdbService;
         private readonly IServiceProvider serviceProvider;
         private string[] consults = new string[] { "horosopes", "the oracles", "bill gates" };
 
         public GetEventHandler(
-            OmdbService omdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(GetEvent request, CancellationToken cancellationToken)

@@ -18,16 +18,13 @@ namespace OscarBot.Commands
 
     public class GenerateRandomPicksHandler : MediatR.AsyncRequestHandler<GenerateRandomPicks>
     {
-        private readonly OmdbService omdbService;
         private readonly IServiceProvider serviceProvider;
         private string[] consults = new string[] { "horosopes", "the oracles", "bill gates" };
 
         public GenerateRandomPicksHandler(
-            OmdbService omdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(GenerateRandomPicks request, CancellationToken cancellationToken)

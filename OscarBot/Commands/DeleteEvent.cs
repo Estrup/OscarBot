@@ -17,15 +17,12 @@ namespace OscarBot.Commands
 
     public class DeleteEventHandler : MediatR.AsyncRequestHandler<DeleteEvent>
     {
-        private readonly OmdbService omdbService;
         private readonly IServiceProvider serviceProvider;
 
         public DeleteEventHandler(
-            OmdbService omdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(DeleteEvent request, CancellationToken cancellationToken)

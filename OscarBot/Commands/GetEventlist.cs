@@ -18,15 +18,12 @@ namespace OscarBot.Commands
 
     public class GetEventlistHandler : MediatR.AsyncRequestHandler<GetEventlist>
     {
-        private readonly OmdbService omdbService;
         private readonly IServiceProvider serviceProvider;
 
         public GetEventlistHandler(
-            OmdbService omdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(GetEventlist request, CancellationToken cancellationToken)

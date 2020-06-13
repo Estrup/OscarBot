@@ -17,15 +17,15 @@ namespace OscarBot.Commands
 
     public class AddPickHandler : MediatR.AsyncRequestHandler<AddPick>
     {
-        private readonly OmdbService omdbService;
+        private readonly TmdbService omdbService;
         private readonly IServiceProvider serviceProvider;
 
         public AddPickHandler(
-            OmdbService omdbService,
+            TmdbService tmdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
+            this.omdbService = tmdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(AddPick request, CancellationToken cancellationToken)
@@ -54,29 +54,17 @@ namespace OscarBot.Commands
 
             var alreadyselected = mevent.EventMovies.Select(x => x.Movie);
 
-            if (alreadyselected.Any(x => x.Id == result.imdbID)) await Context.Channel.SendMessageAsync($"Movie already added to event..");
+            if (alreadyselected.Any(x => x.ImdbId  == result.ImdbId)) await Context.Channel.SendMessageAsync($"Movie already added to event..");
 
             Movie movie;
-            if (await db.Movie.AsQueryable().AnyAsync(x => x.Id == result.imdbID))
+            if (await db.Movie.AsQueryable().AnyAsync(x => x.ImdbId == result.ImdbId ))
             {
-                movie = await db.Movie.AsQueryable().SingleAsync(x => x.Id == result.imdbID);
+                movie = await db.Movie.AsQueryable().SingleAsync(x => x.ImdbId == result.ImdbId);
 
             }
             else
             {
-                movie = new Movie
-                {
-                    Id = result.imdbID,
-                    Title = result.Title,
-                    Plot = result.Plot,
-                    Actors = result.Actors,
-                    Director = result.Director,
-                    Language = result.Director,
-                    Runtime = result.Runtime,
-                    AddedBy = Context.User.Id.ToString(),
-                    AddedByUsername = Context.User.Username,
-                    AddedAt = DateTime.Now
-                };
+                movie = Movie.FromTmdbMovie(result, Context.User);
             }
             mevent.EventMovies.Add(new EventMovie { Movie = movie });
             await db.SaveChangesAsync();

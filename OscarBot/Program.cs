@@ -74,6 +74,7 @@ namespace OscarBot
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
                 .AddSingleton<OmdbService>()
+                .AddSingleton<TmdbService>()
                 .AddSingleton(x => loggerFactory)
                 .AddDbContext<BotDbContext>(options =>
                     options.UseSqlServer(Environment.GetEnvironmentVariable("ConnectionString"))

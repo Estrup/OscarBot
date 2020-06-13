@@ -16,15 +16,15 @@ namespace OscarBot.Commands
 
     public class AddWatchedHandler : MediatR.AsyncRequestHandler<AddWatched>
     {
-        private readonly OmdbService omdbService;
+        private readonly TmdbService tmdbService;
         private readonly IServiceProvider serviceProvider;
 
         public AddWatchedHandler(
-            OmdbService omdbService,
+            TmdbService tmdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
+            this.tmdbService = tmdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(AddWatched request, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ namespace OscarBot.Commands
             var idOrUrl = request.IdOrUrl;
             var Context = request.Context;
 
-            var result = await omdbService.Get(idOrUrl);
+            var result = await tmdbService.Get(idOrUrl);
             if (result == null)
             {
                 await Context.Channel.SendMessageAsync($"No movie with that id was found...");
@@ -41,29 +41,15 @@ namespace OscarBot.Commands
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetService<BotDbContext>();
 
-            if (await db.Movie.AsQueryable().AnyAsync(x => x.Id == result.imdbID))
+            if (await db.Movie.AsQueryable().AnyAsync(x => x.ImdbId == result.ImdbId))
             {
-                var movie = await db.Movie.AsQueryable().SingleAsync(x => x.Id == result.imdbID);
+                var movie = await db.Movie.AsQueryable().SingleAsync(x => x.ImdbId == result.ImdbId);
                 movie.Watched = true;
                 movie.WatchedDate = DateTime.Now;
             }
             else
             {
-                db.Movie.Add(new Movie
-                {
-                    Id = result.imdbID,
-                    Title = result.Title,
-                    Plot = result.Plot,
-                    Actors = result.Actors,
-                    Director = result.Director,
-                    Language = result.Director,
-                    Runtime = result.Runtime,
-                    Watched = true,
-                    WatchedDate = DateTime.Now,
-                    AddedBy = Context.User.Id.ToString(),
-                    AddedByUsername = Context.User.Username,
-                    AddedAt = DateTime.Now
-                });
+                db.Movie.Add(Movie.FromTmdbMovie(result, Context.User));
             }
             await db.SaveChangesAsync();
 

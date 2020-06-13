@@ -12,15 +12,15 @@ namespace OscarBot.Commands
 
     public class DeleteMovieHandler : MediatR.AsyncRequestHandler<DeleteMovie>
     {
-        private readonly OmdbService omdbService;
+        private readonly TmdbService tmdbService;
         private readonly IServiceProvider serviceProvider;
 
         public DeleteMovieHandler(
-            OmdbService omdbService,
+            TmdbService tmdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
+            this.tmdbService = tmdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(DeleteMovie request, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ namespace OscarBot.Commands
             var idOrUrl = request.IdOrUrl;
             var Context = request.Context;
 
-            var result = await omdbService.Get(idOrUrl);
+            var result = await tmdbService.Get(idOrUrl);
             if (result == null)
             {
                 await Context.Channel.SendMessageAsync($"No movie with that id was found...");
@@ -36,12 +36,12 @@ namespace OscarBot.Commands
 
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetService<BotDbContext>();
-            if (!await db.Movie.AnyAsync(x => x.Id == result.imdbID))
+            if (!await db.Movie.AnyAsync(x => x.ImdbId == result.ImdbId))
             {
                 await Context.Channel.SendMessageAsync($"***{ result.Title }*** was not on the list!");
                 return;
             }
-            var movie = await db.Movie.SingleAsync(x => x.Id == result.imdbID);
+            var movie = await db.Movie.SingleAsync(x => x.ImdbId == result.ImdbId);
             db.Movie.Remove(movie);
 
             await db.SaveChangesAsync();

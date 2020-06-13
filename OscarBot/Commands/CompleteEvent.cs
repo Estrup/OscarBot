@@ -16,15 +16,12 @@ namespace OscarBot.Commands
 
     public class CompleteEventHandler : MediatR.AsyncRequestHandler<CompleteEvent>
     {
-        private readonly OmdbService omdbService;
         private readonly IServiceProvider serviceProvider;
 
         public CompleteEventHandler(
-            OmdbService omdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(CompleteEvent request, CancellationToken cancellationToken)

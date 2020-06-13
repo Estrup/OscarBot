@@ -17,15 +17,15 @@ namespace OscarBot.Commands
 
     public class DeletePickandler : MediatR.AsyncRequestHandler<DeletePick>
     {
-        private readonly OmdbService omdbService;
+        private readonly TmdbService tmdbService;
         private readonly IServiceProvider serviceProvider;
 
         public DeletePickandler(
-            OmdbService omdbService,
+            TmdbService tmdbService,
             IServiceProvider serviceProvider
             )
         {
-            this.omdbService = omdbService;
+            this.tmdbService = tmdbService;
             this.serviceProvider = serviceProvider;
         }
         protected override async Task Handle(DeletePick request, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ namespace OscarBot.Commands
             var idOrUrl = request.IdOrUrl;
             var Context = request.Context;
 
-            var result = await omdbService.Get(idOrUrl);
+            var result = await tmdbService.Get(idOrUrl);
             if (result == null)
             {
                 await Context.Channel.SendMessageAsync($"No movie with that id was found...");
@@ -52,7 +52,7 @@ namespace OscarBot.Commands
                 return;
             }
 
-            var em = mevent.EventMovies.SingleOrDefault(x => x.MovieId == result.imdbID);
+            var em = mevent.EventMovies.SingleOrDefault(x => x.MovieId == result.ImdbId);
             if (em != null)
             {
                 mevent.EventMovies.Remove(em);

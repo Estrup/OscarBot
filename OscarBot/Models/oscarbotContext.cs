@@ -19,6 +19,7 @@ namespace OscarBot.Models
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Event> Event { get; set; }
         public virtual DbSet<EventMovie> EventMovie { get; set; }
+        public virtual DbSet<Server> Server { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
