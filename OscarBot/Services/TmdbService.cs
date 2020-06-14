@@ -22,7 +22,7 @@ namespace OscarBot.Services
 
         public async Task<TmdbMovie> GetTitle(long id)
         {
-            var url = $"https://api.themoviedb.org/3/movie/{id}?api_key={_key}&language=en-US&append_to_response=release_dates%2Credits";
+            var url = $"https://api.themoviedb.org/3/movie/{id}?api_key={_key}&language=en-US&append_to_response=release_dates,credits";
             var resp = await _http.GetAsync(url);
             var json = await resp.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<TmdbMovie>(json);
@@ -59,7 +59,7 @@ namespace OscarBot.Services
             var resp = await _http.GetAsync(url);
             var json = await resp.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<TmdbSearchResult>(json);
-            if (result.MovieResults.Count != 0) return null;
+            if (result.MovieResults.Count != 1) return null;
 
             return result.MovieResults.First().Id;
         }

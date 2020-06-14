@@ -76,13 +76,14 @@ namespace OscarBot
                 .AddSingleton<OmdbService>()
                 .AddSingleton<TmdbService>()
                 .AddSingleton(x => loggerFactory)
-                .AddDbContext<BotDbContext>(options =>
-                    options.UseSqlServer(Environment.GetEnvironmentVariable("ConnectionString"))
+                .AddDbContext< BotDbContext>(options => 
+                  options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionString"))
+                //    //options.UseSqlServer(Environment.GetEnvironmentVariable("ConnectionString"))
                         .EnableSensitiveDataLogging(true)
                         .UseLoggerFactory(loggerFactory)
-                        .EnableDetailedErrors(true)
+                       .EnableDetailedErrors(true)
 
-                        )
+                       )
                 .AddMediatR(typeof(Program))
                 .BuildServiceProvider();
         }

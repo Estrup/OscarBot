@@ -45,14 +45,15 @@ namespace OscarBot.Commands
             var mevent = await db.Event
                 .Include(x => x.EventMovies)
                 .ThenInclude(x => x.Movie)
-                .SingleOrDefaultAsync(x => x.Id == request.EventId);
+                .SingleOrDefaultAsync(x => x.ServerId == Context.Guild.Id.ToString() && x.No == request.EventId);
+
             if (mevent == null)
             {
                 await Context.Channel.SendMessageAsync($"Event not found...");
                 return;
             }
 
-            var em = mevent.EventMovies.SingleOrDefault(x => x.MovieId == result.ImdbId);
+            var em = mevent.EventMovies.SingleOrDefault(x => x.Movie.ImdbId == result.ImdbId);
             if (em != null)
             {
                 mevent.EventMovies.Remove(em);

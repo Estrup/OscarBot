@@ -9,7 +9,8 @@ namespace OscarBot.Models
         {
             EventMovies = new HashSet<EventMovie>();
         }
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        public string ServerId { get; set; }
         public string Title { get; set; }
         public DateTime EventStart { get; set; }
         public DateTime? EventEnd { get; set; }
@@ -18,5 +19,6 @@ namespace OscarBot.Models
         public virtual ICollection<EventMovie> EventMovies { get; set; }
         public string AddedBy { get; internal set; }
         public string AddedByUsername { get; internal set; }
+        public int No { get; internal set; }
     }
 }

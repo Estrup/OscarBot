@@ -9,5 +9,6 @@ namespace OscarBot.Models
         public string AnnouncementChannelId { get; set; }
         public string TimeZone { get; set; }
         public string AnnounementTriggerTime { get; set; }
+        public int LastEventNo { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace OscarBot.Commands
             var mevent = await db.Event
                 .Include(x => x.EventMovies)
                 .ThenInclude(x => x.Movie)
-                .SingleOrDefaultAsync(x => x.Id == request.EventId);
+                .SingleOrDefaultAsync(x => x.ServerId == Context.Guild.Id.ToString() && x.No == request.EventId);
             if (mevent == null)
             {
                 await Context.Channel.SendMessageAsync($"Event not found...");
@@ -65,6 +65,8 @@ namespace OscarBot.Commands
             else
             {
                 movie = Movie.FromTmdbMovie(result, Context.User);
+                movie.ServerId = Context.Guild.Id.ToString();
+                db.Movie.Add(movie);
             }
             mevent.EventMovies.Add(new EventMovie { Movie = movie });
             await db.SaveChangesAsync();

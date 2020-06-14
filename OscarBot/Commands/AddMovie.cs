@@ -39,6 +39,8 @@ namespace OscarBot.Commands
             {
                 var movie = await db.Movie.SingleAsync(x => x.ImdbId == result.ImdbId );
                 movie.Watched = false;
+                movie.Watchlist = true;
+                movie.ServerId = Context.Guild.Id.ToString();
             }
             else
             {

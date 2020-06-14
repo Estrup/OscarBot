@@ -51,7 +51,7 @@ namespace OscarBot.Commands
             };
 
             builder.AddColumn("Title", "Title", 25);
-            builder.AddColumn("Director", "Director", 20);
+            //builder.AddColumn("Director", "Director", 20);
             builder.AddColumn("WatchedDate", "WatchedDate");
             var pages = builder.Build(list);
             foreach (var page in pages)

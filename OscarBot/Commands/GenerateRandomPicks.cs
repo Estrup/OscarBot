@@ -36,7 +36,7 @@ namespace OscarBot.Commands
             var mevent = await db.Event
                 .Include(x => x.EventMovies)
                 .ThenInclude(x => x.Movie)
-                .SingleOrDefaultAsync(x => x.Id == request.EventId);
+                .SingleOrDefaultAsync(x => x.ServerId == Context.Guild.Id.ToString() && x.No == request.EventId);
             if (mevent == null)
             {
                 await Context.Channel.SendMessageAsync($"Event not found...");

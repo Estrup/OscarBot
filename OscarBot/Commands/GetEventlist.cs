@@ -60,7 +60,7 @@ namespace OscarBot.Commands
                     Description = returnstring.ToString(),
                     Color = Color.DarkBlue
                 };
-                eb.AddField("Id", item.Id.ToString(), true);
+                eb.AddField("Id", item.No.ToString(), true);
                 eb.AddField("Start", item.EventStart.ToString("dd-MM-yyyy HH:mm"), true);
                 if (item.EventEnd != null)
                     eb.AddField("End", item.EventEnd.Value.ToString("dd-mm-yyyy HH:mm"), true);

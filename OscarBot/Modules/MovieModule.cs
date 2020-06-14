@@ -103,6 +103,10 @@ namespace OscarBot.Modules
         public async Task GetEventList(string type = "") =>
             await Mediator.Send(new GetEventlist { Context = Context, Type = type });
 
+        [Command("setup")]
+        public async Task Setup(string action, string value = null) =>
+            await Mediator.Send(new SetupServer{ Context = Context, Action = action, Value = value});
+
         [Command("help")]
         public async Task GetHelp()
         {

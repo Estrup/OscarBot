@@ -21,7 +21,7 @@ namespace OscarBot.Models
         public string Language { get; set; }
         public string Plot { get; set; }
         public int? Runtime { get; set; }
-        public DateTimeOffset ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
         public bool Watched { get; set; }
         public bool Watchlist { get; set; }
         public bool Monitor { get; set; }
@@ -54,13 +54,16 @@ namespace OscarBot.Models
                {
                    var releasedate = new ReleaseDate();
                    releasedate.LocationCode = x.Iso3166_1;
-                   return x.ReleaseDates.Select(r => new ReleaseDate {
+                   return x.ReleaseDates.Select(r => new ReleaseDate
+                   {
                        LocationCode = x.Iso3166_1,
                        Date = r.ReleaseDateReleaseDate,
                        Note = r.Note,
                        Type = (ReleaseDateType)r.Type
                    });
                }).SelectMany(x => x).ToList();
+            movie.Credits = tmdbMovie.Credits.Crew.Where(x => x.Job == "Director").Select(x => new Credit { Id = Guid.NewGuid(), Name = x.Name, Role = "Director", Order = 0 }).ToList();
+            movie.Credits = movie.Credits.Concat(tmdbMovie.Credits.Cast.OrderByDescending(x => x.Order).Take(10).Select(x => new Credit { Id = Guid.NewGuid(), Name = x.Name, Role = "Actor", Order = x.Order })).ToList();
             return movie;
         }
     }
